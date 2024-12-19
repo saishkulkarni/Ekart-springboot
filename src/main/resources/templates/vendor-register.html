@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Registration</title>
+</head>
+
+<body>
+    <div align="center">
+		<h1>Vendor Registration</h1>
+        <form action="/vendor/register" method="post" th:object="${vendor}">
+            Name: <input type="text" th:field="*{name}" name="name"><span th:errors="*{name}"></span><br><br>
+            Email: <input type="text" th:field="*{email}" name="email"><span th:errors="*{email}"></span><br><br>
+            Mobile: <input type="number" th:field="*{mobile}" name="mobile"><span th:errors="*{mobile}"></span><br><br>
+            Password: <input type="text" th:field="*{password}" name="password"><span th:errors="*{password}"></span><br><br>
+            Confirm Password: <input type="text" th:field="*{confirmPassword}" name="confirmPassword"><span th:errors="*{confirmPassword}"></span><br><br>
+            <button>Register</button>
+        </form>
+    </div>
+</body>
+
+</html>
