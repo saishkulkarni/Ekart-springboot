@@ -4,13 +4,12 @@ import java.util.Random;
 
 import org.jsp.ekart.dto.Vendor;
 import org.jsp.ekart.helper.AES;
+import org.jsp.ekart.helper.EmailSender;
 import org.jsp.ekart.repository.VendorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-
-import jakarta.validation.Valid;
 
 @Service
 public class VendorService {
@@ -18,12 +17,15 @@ public class VendorService {
 	@Autowired
 	VendorRepository vendorRepository;
 
+	@Autowired
+	EmailSender emailSender;
+
 	public String loadRegistration(ModelMap map, Vendor vendor) {
 		map.put("vendor", vendor);
 		return "vendor-register.html";
 	}
 
-	public String registration(@Valid Vendor vendor, BindingResult result) {
+	public String registration(Vendor vendor, BindingResult result) {
 		if (!vendor.getPassword().equals(vendor.getConfirmPassword()))
 			result.rejectValue("confirmPassword", "error.confirmPassword",
 					"* Password and Confirm Password Should Match");
@@ -35,25 +37,26 @@ public class VendorService {
 		if (result.hasErrors())
 			return "vendor-register.html";
 		else {
-			int otp=new Random().nextInt(100000, 1000000);
+			int otp = new Random().nextInt(100000, 1000000);
 			vendor.setOtp(otp);
 			vendor.setPassword(AES.encrypt(vendor.getPassword()));
 			vendorRepository.save(vendor);
-			//email Logic
+			// email Logic
+			emailSender.send(vendor);
 			System.err.println(vendor.getOtp());
-			
-			return "redirect:/vendor/otp/"+vendor.getId();
+
+			return "redirect:/vendor/otp/" + vendor.getId();
 		}
 	}
 
 	public String verifyOtp(int id, int otp) {
-		Vendor vendor=vendorRepository.findById(id).orElseThrow();
-		if(vendor.getOtp()==otp) {
+		Vendor vendor = vendorRepository.findById(id).orElseThrow();
+		if (vendor.getOtp() == otp) {
 			vendor.setVerified(true);
 			vendorRepository.save(vendor);
 			return "redirect:/";
-		}else {
-			return "redirect:/vendor/otp/"+vendor.getId();
+		} else {
+			return "redirect:/vendor/otp/" + vendor.getId();
 		}
 	}
 
