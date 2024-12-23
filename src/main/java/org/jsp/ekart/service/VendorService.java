@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 
+import jakarta.servlet.http.HttpSession;
+
 @Service
 public class VendorService {
 
@@ -25,7 +27,7 @@ public class VendorService {
 		return "vendor-register.html";
 	}
 
-	public String registration(Vendor vendor, BindingResult result) {
+	public String registration(Vendor vendor, BindingResult result,HttpSession session) {
 		if (!vendor.getPassword().equals(vendor.getConfirmPassword()))
 			result.rejectValue("confirmPassword", "error.confirmPassword",
 					"* Password and Confirm Password Should Match");
@@ -41,21 +43,22 @@ public class VendorService {
 			vendor.setOtp(otp);
 			vendor.setPassword(AES.encrypt(vendor.getPassword()));
 			vendorRepository.save(vendor);
-			// email Logic
-			emailSender.send(vendor);
+			//emailSender.send(vendor);
 			System.err.println(vendor.getOtp());
-
+			session.setAttribute("success", "Otp Sent Successfully");
 			return "redirect:/vendor/otp/" + vendor.getId();
 		}
 	}
 
-	public String verifyOtp(int id, int otp) {
+	public String verifyOtp(int id, int otp,HttpSession session) {
 		Vendor vendor = vendorRepository.findById(id).orElseThrow();
 		if (vendor.getOtp() == otp) {
 			vendor.setVerified(true);
 			vendorRepository.save(vendor);
+			session.setAttribute("success", "Vendor Accoutn Created Success");
 			return "redirect:/";
 		} else {
+			session.setAttribute("failure", "OTP Missmatch");
 			return "redirect:/vendor/otp/" + vendor.getId();
 		}
 	}

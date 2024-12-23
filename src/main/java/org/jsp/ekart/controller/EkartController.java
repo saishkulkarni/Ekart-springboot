@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
@@ -36,12 +37,12 @@ public class EkartController {
 	}
 
 	@PostMapping("/vendor/register")
-	public String vendorRegistration(@Valid Vendor vendor, BindingResult result) {
-		return vendorService.registration(vendor, result);
+	public String vendorRegistration(@Valid Vendor vendor, BindingResult result,HttpSession session) {
+		return vendorService.registration(vendor, result,session);
 	}
 	
 	@PostMapping("/vendor/otp")
-	public String verifyOtp(@RequestParam int id,@RequestParam int otp) {
-		return vendorService.verifyOtp(id,otp);
+	public String verifyOtp(@RequestParam int id,@RequestParam int otp,HttpSession session) {
+		return vendorService.verifyOtp(id,otp,session);
 	}
 }
