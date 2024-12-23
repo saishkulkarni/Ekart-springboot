@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ekart - Home</title>
+    <title>Ekart - Vendor Home</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
@@ -14,15 +14,6 @@
         }
         .container {
             flex: 1;
-        }
-        .navbar {
-            background-color: #007bff;
-        }
-        .navbar-brand, .nav-link {
-            color: white !important;
-        }
-        .alert {
-            margin-bottom: 20px;
         }
         footer {
             background-color: #f8f9fa;
@@ -48,10 +39,11 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <div class="alert alert-success" th:if="${session.success}" th:text="${session.success}"></div>
-        <div class="alert alert-danger" th:if="${session.failure}" th:text="${session.failure}"></div>
+    <div class="container mt-4 text-center">
+        <h3 class="text-success" th:text="${session.success}"></h3>
+        <h3 class="text-danger" th:text="${session.failure}"></h3>
         <th:block th:text="${@messageRemover.remove()}"></th:block>
+        <h1>This is Vendor Home</h1>
     </div>
 
     <footer class="bg-light text-center text-lg-start mt-4">

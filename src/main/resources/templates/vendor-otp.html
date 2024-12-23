@@ -1,23 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Ekart - OTP Verification</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            flex: 1;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+        footer {
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>OTP Verification</h1>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="/">Ekart</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/vendor/login">Vendor Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/vendor/register">Vendor Registration</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-	<div>
-	    <h3 style="color: green;" th:text="${session.success}"></h3>
-	    <h3 style="color: red;" th:text="${session.failure}"></h3>
-	    <th:block th:text="${@messageRemover.remove()}"></th:block>
-	</div>
+    <div class="container mt-4">
+        <h1>OTP Verification</h1>
+        <div>
+            <h3 style="color: green;" th:text="${session.success}"></h3>
+            <h3 style="color: red;" th:text="${session.failure}"></h3>
+            <th:block th:text="${@messageRemover.remove()}"></th:block>
+        </div>
 
-    <form action="/vendor/otp" method="post">
-        <input type="hidden" name="id" th:value="${id}">
-        Enter OTP: <input type="number" name="otp">
-        <button>Submit</button>
-    </form>
+        <form action="/vendor/otp" method="post">
+            <input type="hidden" name="id" th:value="${id}">
+            <div class="form-group">
+                <label for="otp">Enter OTP:</label>
+                <input type="number" class="form-control" name="otp" id="otp" required>
+            </div>
+            <button class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <footer class="bg-light text-center text-lg-start mt-4">
+        <div class="text-center p-3">
+            © 2023 Ekart. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
