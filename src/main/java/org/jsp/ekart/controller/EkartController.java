@@ -1,6 +1,9 @@
 package org.jsp.ekart.controller;
 
+import org.jsp.ekart.dto.Product;
 import org.jsp.ekart.dto.Vendor;
+import org.jsp.ekart.helper.CloudinaryHelper;
+import org.jsp.ekart.repository.ProductRepository;
 import org.jsp.ekart.service.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +22,12 @@ public class EkartController {
 
 	@Autowired
 	VendorService vendorService;
+
+	@Autowired
+	CloudinaryHelper cloudinaryHelper;
+
+	@Autowired
+	ProductRepository productRepository;
 
 	@GetMapping("/")
 	public String loadHomePage() {
@@ -64,5 +73,38 @@ public class EkartController {
 			session.setAttribute("failure", "Invalid Session, First Login");
 			return "redirect:/vendor/login";
 		}
+	}
+
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("vendor");
+		session.setAttribute("success", "Logged out Success");
+		return "redirect:/";
+	}
+
+	@GetMapping("/add-product")
+	public String loadAddProduct(HttpSession session) {
+		if (session.getAttribute("vendor") != null)
+			return "add-product.html";
+		else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/vendor/login";
+		}
+	}
+
+	@PostMapping("/add-product")
+	public String addProduct(Product product, HttpSession session) {
+		if (session.getAttribute("vendor") != null) {
+			Vendor vendor = (Vendor) session.getAttribute("vendor");
+			product.setVendor(vendor);
+			product.setImageLink(cloudinaryHelper.saveToCloudinary(product.getImage()));
+			productRepository.save(product);
+			session.setAttribute("success", "Product Added Success");
+			return "redirect:/vendor/home";
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/vendor/login";
+		}
+
 	}
 }
