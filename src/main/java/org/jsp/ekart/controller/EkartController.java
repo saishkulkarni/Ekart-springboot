@@ -1,5 +1,7 @@
 package org.jsp.ekart.controller;
 
+import java.io.IOException;
+
 import org.jsp.ekart.dto.Product;
 import org.jsp.ekart.dto.Vendor;
 import org.jsp.ekart.helper.CloudinaryHelper;
@@ -93,7 +95,7 @@ public class EkartController {
 	}
 
 	@PostMapping("/add-product")
-	public String addProduct(Product product, HttpSession session) {
+	public String addProduct(Product product, HttpSession session) throws IOException {
 		if (session.getAttribute("vendor") != null) {
 			Vendor vendor = (Vendor) session.getAttribute("vendor");
 			product.setVendor(vendor);
