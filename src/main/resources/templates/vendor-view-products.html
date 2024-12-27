@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <div align="center">
+            <table border="1">
+                <tr>
+                    <th>Name</th>
+                    <th>Picture</th>
+                    <th>Description</th>
+                    <th>Stock</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+
+                <tr th:each="p:${products}">
+                    <th th:text="${p.name}"></th>
+                    <th><img height="100px" width="100px" th:src="${p.imageLink}"></th>
+                    <th th:text="${p.description}"></th>
+                    <th th:text="${p.stock}+' Units'"></th>
+                    <th th:text="${p.price}"></th>
+                    <th th:text="${p.category}"></th>
+                    <th><button>Edit</button></th>
+                    <th><a th:href="'/delete/'+${p.id}"><button>Delete</button></a></th>
+                </tr>
+            </table>
+			
+			<br>
+			<a href="/vendor/home"><button>Back</button></a>
+        </div>
+</body>
+</html>

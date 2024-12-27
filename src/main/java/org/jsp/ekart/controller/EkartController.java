@@ -1,6 +1,7 @@
 package org.jsp.ekart.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.jsp.ekart.dto.Product;
 import org.jsp.ekart.dto.Vendor;
@@ -107,6 +108,23 @@ public class EkartController {
 			session.setAttribute("failure", "Invalid Session, First Login");
 			return "redirect:/vendor/login";
 		}
-
+	}
+	
+	@GetMapping("/manage-products")
+	public String manageProducts(HttpSession session,ModelMap map) {
+		if (session.getAttribute("vendor") != null) {
+			Vendor vendor = (Vendor) session.getAttribute("vendor");
+			List<Product> products=productRepository.findByVendor(vendor);
+			if(products.isEmpty()) {
+				session.setAttribute("failure", "No Products Present");
+				return "redirect:/vendor/home";
+			}else {
+				map.put("products", products);
+				return "vendor-view-products.html";
+			}
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/vendor/login";
+		}
 	}
 }
