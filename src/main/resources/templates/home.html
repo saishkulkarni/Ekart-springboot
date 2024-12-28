@@ -6,63 +6,165 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ekart - Home</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f8f9fa;
+            --accent-color: #ff6b6b;
+        }
+
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
         }
+
         .container {
             flex: 1;
+            padding: 2rem;
         }
+
         .navbar {
-            background-color: #007bff;
+            background: linear-gradient(135deg, var(--primary-color), #2c5282);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
         }
-        .navbar-brand, .nav-link {
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
             color: white !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
+
+        .nav-link {
+            color: white !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .navbar-toggler {
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
         .alert {
             margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
         footer {
-            background-color: #f8f9fa;
+            background: var(--secondary-color);
+            color: #333;
+            padding: 1.5rem 0;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.5rem 1rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        /* Add some animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            animation: fadeIn 0.5s ease-out;
         }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="/">Ekart</a>
+        <a class="navbar-brand" href="/"><i class="fas fa-shopping-cart mr-2"></i>Ekart</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/vendor/login">Vendor Login</a>
+                    <a class="nav-link" href="/vendor/login"><i class="fas fa-sign-in-alt mr-1"></i> Vendor Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/vendor/register">Vendor Registration</a>
+                    <a class="nav-link" href="/vendor/register"><i class="fas fa-user-plus mr-1"></i> Vendor Registration</a>
                 </li>
             </ul>
         </div>
     </nav>
 
     <div class="container mt-4">
-        <div class="alert alert-success" th:if="${session.success}" th:text="${session.success}"></div>
-        <div class="alert alert-danger" th:if="${session.failure}" th:text="${session.failure}"></div>
+        <div class="alert alert-success alert-dismissible fade show" th:if="${session.success}" role="alert">
+            <span th:text="${session.success}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="alert alert-danger alert-dismissible fade show" th:if="${session.failure}" role="alert">
+            <span th:text="${session.failure}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
         <th:block th:text="${@messageRemover.remove()}"></th:block>
     </div>
 
-    <footer class="bg-light text-center text-lg-start mt-4">
+    <footer class="text-center text-lg-start mt-auto">
         <div class="text-center p-3">
-            © 2023 Ekart. All rights reserved.
+            © 2024 Ekart. All rights reserved. | <i class="fas fa-heart text-danger"></i> Made with passion
         </div>
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Auto-dismiss alerts after 2 seconds
+        window.setTimeout(function() {
+            $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                $(this).remove(); 
+            });
+        }, 2000);
+    </script>
 </body>
 
 </html>

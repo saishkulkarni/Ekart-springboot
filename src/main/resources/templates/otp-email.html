@@ -5,24 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>One Time Password</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+        :root {
+            --primary-color: #2874f0;
+            --secondary-color: #fb641b;
+            --text-color: #212121;
+            --light-text: #878787;
+            --white: #ffffff;
         }
+        
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f1f3f6;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
         .container {
             max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            padding: 30px;
+            background: var(--white);
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
+        
         h1 {
-            color: blue;
+            color: var(--primary-color);
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 500;
         }
+        
         h2 {
-            color: green;
+            color: var(--secondary-color);
+            font-size: 32px;
+            margin: 20px 0;
+            letter-spacing: 2px;
+        }
+        
+        h3 {
+            color: var(--text-color);
+            font-size: 24px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+        
+        h4 {
+            color: var(--text-color);
+            font-size: 20px;
+            margin: 15px 0;
+            font-weight: 400;
+        }
+        
+        h5 {
+            color: var(--text-color);
+            font-size: 18px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+        
+        span {
+            color: var(--light-text);
+            font-size: 14px;
+            display: block;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            h2 {
+                font-size: 28px;
+            }
+            
+            h3 {
+                font-size: 20px;
+            }
+            
+            h4 {
+                font-size: 18px;
+            }
+            
+            h5 {
+                font-size: 16px;
+            }
         }
     </style>
 </head>

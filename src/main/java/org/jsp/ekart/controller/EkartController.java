@@ -127,4 +127,16 @@ public class EkartController {
 			return "redirect:/vendor/login";
 		}
 	}
+	
+	@GetMapping("/delete/{id}")
+	public String delete(@PathVariable int id,HttpSession session) {
+		if (session.getAttribute("vendor") != null) {
+			productRepository.deleteById(id);
+			session.setAttribute("success", "Product Deleted Success");
+			return "redirect:/manage-products";
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/vendor/login";
+		}
+	}
 }

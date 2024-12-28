@@ -6,56 +6,206 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vendor Registration</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f8f9fa;
+            --accent-color: #ff6b6b;
+        }
+
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
         }
+
         .container {
             flex: 1;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-out;
         }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), #2c5282);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-link {
+            color: white !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .registration-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .registration-form h1 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-control {
+            border: 2px solid #e1e1e1;
+            border-radius: 5px;
+            padding: 0.8rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: none;
+        }
+
+        .error-message {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            padding: 0.8rem 2rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
         footer {
-            background-color: #f8f9fa;
+            background: var(--secondary-color);
+            color: #333;
+            padding: 1.5rem 0;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.5rem 1rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .registration-form {
+                padding: 1.5rem;
+                margin: 0 1rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="/">Ekart</a>
+        <a class="navbar-brand" href="/"><i class="fas fa-shopping-cart mr-2"></i>Ekart</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/vendor/login">Vendor Login</a>
+                    <a class="nav-link" href="/vendor/login"><i class="fas fa-sign-in-alt mr-1"></i> Vendor Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/vendor/register">Vendor Registration</a>
+                    <a class="nav-link" href="/vendor/register"><i class="fas fa-user-plus mr-1"></i> Vendor Registration</a>
                 </li>
             </ul>
         </div>
     </nav>
 
     <div class="container mt-4">
-        <div align="center">
-            <h1>Vendor Registration</h1>
+        <div class="registration-form">
+            <h1 class="text-center">Vendor Registration</h1>
             <form action="/vendor/register" method="post" th:object="${vendor}">
-                Name: <input type="text" th:field="*{name}" name="name"><span th:errors="*{name}"></span><br><br>
-                Email: <input type="text" th:field="*{email}" name="email"><span th:errors="*{email}"></span><br><br>
-                Mobile: <input type="number" th:field="*{mobile}" name="mobile"><span th:errors="*{mobile}"></span><br><br>
-                Password: <input type="text" th:field="*{password}" name="password"><span th:errors="*{password}"></span><br><br>
-                Confirm Password: <input type="text" th:field="*{confirmPassword}" name="confirmPassword"><span th:errors="*{confirmPassword}"></span><br><br>
-                <button class="btn btn-primary">Register</button>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}" name="name">
+                    <span class="error-message" th:errors="*{name}"></span>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" th:field="*{email}" name="email">
+                    <span class="error-message" th:errors="*{email}"></span>
+                </div>
+                <div class="form-group">
+                    <label for="mobile">Mobile</label>
+                    <input type="tel" class="form-control" id="mobile" th:field="*{mobile}" name="mobile">
+                    <span class="error-message" th:errors="*{mobile}"></span>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" th:field="*{password}" name="password">
+                    <span class="error-message" th:errors="*{password}"></span>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" th:field="*{confirmPassword}" name="confirmPassword">
+                    <span class="error-message" th:errors="*{confirmPassword}"></span>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <footer class="bg-light text-center text-lg-start mt-4">
+    <footer class="text-center text-lg-start mt-auto">
         <div class="text-center p-3">
-            © 2023 Ekart. All rights reserved.
+            © 2024 Ekart. All rights reserved. | <i class="fas fa-heart text-danger"></i> Made with passion
         </div>
     </footer>
 
