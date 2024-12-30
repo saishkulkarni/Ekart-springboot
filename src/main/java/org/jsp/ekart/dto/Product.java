@@ -25,6 +25,7 @@ public class Product {
 	private String imageLink;
 	@Transient
 	private MultipartFile image;
+	private boolean approved;
 
 	@ManyToOne
 	Vendor vendor;

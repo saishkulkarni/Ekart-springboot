@@ -9,6 +9,7 @@ import org.jsp.ekart.helper.CloudinaryHelper;
 import org.jsp.ekart.repository.ProductRepository;
 import org.jsp.ekart.service.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -22,6 +23,11 @@ import jakarta.validation.Valid;
 
 @Controller
 public class EkartController {
+
+	@Value("${admin.email}")
+	String adminEmail;
+	@Value("${admin.password}")
+	String adminPassword;
 
 	@Autowired
 	VendorService vendorService;
@@ -109,16 +115,16 @@ public class EkartController {
 			return "redirect:/vendor/login";
 		}
 	}
-	
+
 	@GetMapping("/manage-products")
-	public String manageProducts(HttpSession session,ModelMap map) {
+	public String manageProducts(HttpSession session, ModelMap map) {
 		if (session.getAttribute("vendor") != null) {
 			Vendor vendor = (Vendor) session.getAttribute("vendor");
-			List<Product> products=productRepository.findByVendor(vendor);
-			if(products.isEmpty()) {
+			List<Product> products = productRepository.findByVendor(vendor);
+			if (products.isEmpty()) {
 				session.setAttribute("failure", "No Products Present");
 				return "redirect:/vendor/home";
-			}else {
+			} else {
 				map.put("products", products);
 				return "vendor-view-products.html";
 			}
@@ -127,9 +133,9 @@ public class EkartController {
 			return "redirect:/vendor/login";
 		}
 	}
-	
+
 	@GetMapping("/delete/{id}")
-	public String delete(@PathVariable int id,HttpSession session) {
+	public String delete(@PathVariable int id, HttpSession session) {
 		if (session.getAttribute("vendor") != null) {
 			productRepository.deleteById(id);
 			session.setAttribute("success", "Product Deleted Success");
@@ -137,6 +143,74 @@ public class EkartController {
 		} else {
 			session.setAttribute("failure", "Invalid Session, First Login");
 			return "redirect:/vendor/login";
+		}
+	}
+
+	@GetMapping("/admin/login")
+	public String loadAdminLogin() {
+		return "admin-login.html";
+	}
+
+	@PostMapping("/admin/login")
+	public String adminLogin(@RequestParam String email, @RequestParam String password, HttpSession session) {
+
+		if (email.equals(adminEmail)) {
+			if (password.equals(adminPassword)) {
+				session.setAttribute("admin", adminEmail);
+				session.setAttribute("success", "Login Success as Admin");
+				return "redirect:/admin/home";
+			} else {
+				session.setAttribute("failure", "Invalid Password");
+				return "redirect:/admin/login";
+			}
+		} else {
+			session.setAttribute("failure", "Invalid Email");
+			return "redirect:/admin/login";
+		}
+	}
+
+	@GetMapping("/admin/home")
+	public String loadAdminHome(HttpSession session) {
+		if (session.getAttribute("admin") != null)
+			return "admin-home.html";
+		else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/admin/login";
+		}
+	}
+
+	@GetMapping("/approve-products")
+	public String approveProducts(HttpSession session, ModelMap map) {
+		if (session.getAttribute("admin") != null) {
+			List<Product> products = productRepository.findAll();
+			if (products.isEmpty()) {
+				session.setAttribute("failure", "No Products Present");
+				return "redirect:/admin/home";
+			} else {
+				map.put("products", products);
+				return "admin-view-products.html";
+			}
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/admin/login";
+		}
+	}
+
+	@GetMapping("/change/{id}")
+	public String changeStatus(@PathVariable int id, HttpSession session) {
+		if (session.getAttribute("admin") != null) {
+			Product product = productRepository.findById(id).get();
+			if (product.isApproved())
+				product.setApproved(false);
+			else
+				product.setApproved(true);
+
+			productRepository.save(product);
+			session.setAttribute("success", "Product Status Changed Success");
+			return "redirect:/approve-products";
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/admin/login";
 		}
 	}
 }

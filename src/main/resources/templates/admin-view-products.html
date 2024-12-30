@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ekart - Home</title>
+    <title>Ekart - Approve Products</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -55,30 +54,60 @@
             transform: translateY(-2px);
         }
 
-        .navbar-toggler {
-            border-color: rgba(255,255,255,0.5);
-        }
-
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        }
-
-        .alert {
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
             margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
         }
 
-        .alert-success {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
+        .card-label {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-right: 5px;
         }
 
-        .alert-danger {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
+        .btn-custom {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-custom:hover {
+            background-color: #2c5282;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-delete {
+            background-color: var(--accent-color);
+        }
+
+        .btn-delete:hover {
+            background-color: #ff4f4f;
         }
 
         footer {
@@ -89,53 +118,31 @@
         }
 
         @media (max-width: 768px) {
-            .navbar {
-                padding: 0.5rem 1rem;
-            }
-            
-            .navbar-brand {
-                font-size: 1.5rem;
-            }
-
             .container {
                 padding: 1rem;
             }
+            
+            .card {
+                margin: 10px 0;
+            }
         }
 
-        /* Add some animation */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        .container {
-            animation: fadeIn 0.5s ease-out;
-        }
     </style>
 </head>
-
 <body>
     <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="/"><i class="fas fa-shopping-cart mr-2"></i>Ekart</a>
+        <a class="navbar-brand" href="/admin/home"><i class="fas fa-shopping-cart mr-2"></i>Ekart</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/vendor/login"><i class="fas fa-sign-in-alt mr-1"></i> Vendor Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/vendor/register"><i class="fas fa-user-plus mr-1"></i> Vendor Registration</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/customer/login"><i class="fas fa-sign-in-alt mr-1"></i> Customer Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/customer/register"><i class="fas fa-user-plus mr-1"></i> Customer Registration</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/login"><i class="fas fa-sign-in-alt mr-1"></i> Admin Login</a>
+                    <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
                 </li>
             </ul>
         </div>
@@ -155,6 +162,44 @@
             </button>
         </div>
         <th:block th:text="${@messageRemover.remove()}"></th:block>
+
+        <div class="row">
+            <div class="col-md-4 mb-4" th:each="p:${products}">
+                <div class="card">
+                    <img class="card-image" th:src="${p.imageLink}">
+                    <div class="card-content">
+                        <div class="mb-2">
+                            <span class="card-label">Name:</span>
+                            <span th:text="${p.name}"></span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="card-label">Description:</span>
+                            <span th:text="${p.description}"></span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="card-label">Stock:</span>
+                            <span th:text="${p.stock}+' Units'"></span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="card-label">Price:</span>
+                            <span th:text="${p.price}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="card-label">Category:</span>
+                            <span th:text="${p.category}"></span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a th:if="${!p.approved}" th:href="'/change/'+${p.id}"><button class="btn-custom"><i class="fas fa-edit mr-2"></i>Approve</button></a>
+                            <a th:if="${p.approved}" th:href="'/change/'+${p.id}"><button class="btn-custom btn-delete"><i class="fas fa-trash-alt mr-2"></i>Hide</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="/admin/home" class="btn-custom"><i class="fas fa-arrow-left mr-2"></i>Back to Dashboard</a>
+        </div>
     </div>
 
     <footer class="text-center text-lg-start mt-auto">
@@ -167,7 +212,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        // Auto-dismiss alerts after 2 seconds
         window.setTimeout(function() {
             $(".alert").fadeTo(500, 0).slideUp(500, function(){
                 $(this).remove(); 
@@ -175,5 +219,4 @@
         }, 2000);
     </script>
 </body>
-
 </html>

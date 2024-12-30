@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ekart - Home</title>
+    <title>Ekart - Admin Home</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -81,6 +81,35 @@
             color: #721c24;
         }
 
+        .content-section {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .btn-custom {
+            margin: 10px;
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-custom:hover {
+            background-color: #2c5282;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
         footer {
             background: var(--secondary-color);
             color: #333;
@@ -100,42 +129,33 @@
             .container {
                 padding: 1rem;
             }
+
+            .btn-custom {
+                margin: 5px;
+                padding: 10px 20px;
+                width: 100%;
+                max-width: 250px;
+            }
         }
 
-        /* Add some animation */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        .container {
-            animation: fadeIn 0.5s ease-out;
         }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="/"><i class="fas fa-shopping-cart mr-2"></i>Ekart</a>
+        <a class="navbar-brand" href="/admin/home"><i class="fas fa-shopping-cart mr-2"></i>Ekart</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
+               
                 <li class="nav-item">
-                    <a class="nav-link" href="/vendor/login"><i class="fas fa-sign-in-alt mr-1"></i> Vendor Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/vendor/register"><i class="fas fa-user-plus mr-1"></i> Vendor Registration</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/customer/login"><i class="fas fa-sign-in-alt mr-1"></i> Customer Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/customer/register"><i class="fas fa-user-plus mr-1"></i> Customer Registration</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/login"><i class="fas fa-sign-in-alt mr-1"></i> Admin Login</a>
+                    <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
                 </li>
             </ul>
         </div>
@@ -155,6 +175,13 @@
             </button>
         </div>
         <th:block th:text="${@messageRemover.remove()}"></th:block>
+
+        <div class="content-section text-center">
+            <h1>Welcome to Admin Dashboard</h1>
+            <div class="d-flex flex-wrap justify-content-center">
+                <a href="/approve-products"><button class="btn-custom"><i class="fas fa-tasks mr-2"></i>Approve Products</button></a>
+           </div>
+        </div>
     </div>
 
     <footer class="text-center text-lg-start mt-auto">
