@@ -3,10 +3,12 @@ package org.jsp.ekart.controller;
 import java.io.IOException;
 import java.util.List;
 
+import org.jsp.ekart.dto.Customer;
 import org.jsp.ekart.dto.Product;
 import org.jsp.ekart.dto.Vendor;
 import org.jsp.ekart.helper.CloudinaryHelper;
 import org.jsp.ekart.repository.ProductRepository;
+import org.jsp.ekart.service.CustomerService;
 import org.jsp.ekart.service.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,9 @@ public class EkartController {
 
 	@Autowired
 	VendorService vendorService;
+
+	@Autowired
+	CustomerService customerService;
 
 	@Autowired
 	CloudinaryHelper cloudinaryHelper;
@@ -211,6 +216,47 @@ public class EkartController {
 		} else {
 			session.setAttribute("failure", "Invalid Session, First Login");
 			return "redirect:/admin/login";
+		}
+	}
+
+	@GetMapping("/customer/otp/{id}")
+	public String loadCustomerOtpPage(@PathVariable int id, ModelMap map) {
+		map.put("id", id);
+		return "customer-otp.html";
+	}
+
+	@GetMapping("/customer/register")
+	public String loadCustomerRegistration(ModelMap map, Customer customer) {
+		return customerService.loadRegistration(map, customer);
+	}
+
+	@PostMapping("/customer/register")
+	public String customerRegistration(@Valid Customer customer, BindingResult result, HttpSession session) {
+		return customerService.registration(customer, result, session);
+	}
+
+	@PostMapping("/customer/otp")
+	public String verifyCustomerOtp(@RequestParam int id, @RequestParam int otp, HttpSession session) {
+		return customerService.verifyOtp(id, otp, session);
+	}
+
+	@GetMapping("/customer/login")
+	public String loadCustomerLogin() {
+		return "customer-login.html";
+	}
+
+	@PostMapping("/customer/login")
+	public String customerLogin(@RequestParam String email, @RequestParam String password, HttpSession session) {
+		return customerService.login(email, password, session);
+	}
+
+	@GetMapping("/customer/home")
+	public String loadCustomerHome(HttpSession session) {
+		if (session.getAttribute("customer") != null)
+			return "customer-home.html";
+		else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/customer/login";
 		}
 	}
 }
