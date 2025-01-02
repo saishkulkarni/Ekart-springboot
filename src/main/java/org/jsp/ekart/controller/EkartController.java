@@ -259,4 +259,31 @@ public class EkartController {
 			return "redirect:/customer/login";
 		}
 	}
+
+	@GetMapping("/edit/{id}")
+	public String editProduct(@PathVariable int id, ModelMap map, HttpSession session) {
+		if (session.getAttribute("vendor") != null) {
+			Product product = productRepository.findById(id).get();
+			map.put("product", product);
+			return "edit-product.html";
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/vendor/login";
+		}
+	}
+	
+	@PostMapping("/update-product")
+	public String updateProduct(Product product, HttpSession session) throws IOException {
+		if (session.getAttribute("vendor") != null) {			
+			Vendor vendor=(Vendor) session.getAttribute("vendor");
+			product.setImageLink(cloudinaryHelper.saveToCloudinary(product.getImage()));
+			product.setVendor(vendor);
+			productRepository.save(product);
+			session.setAttribute("success", "Product Updated Success");
+			return "redirect:/manage-products";
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/vendor/login";
+		}
+	}
 }

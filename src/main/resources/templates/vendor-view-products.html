@@ -189,7 +189,7 @@
                             <span th:text="${p.category}"></span>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <button class="btn-custom"><i class="fas fa-edit mr-2"></i>Edit</button>
+                            <a th:href="'/edit/'+${p.id}"><button class="btn-custom"><i class="fas fa-edit mr-2"></i>Edit</button></a>
                             <a th:href="'/delete/'+${p.id}"><button class="btn-custom btn-delete"><i class="fas fa-trash-alt mr-2"></i>Delete</button></a>
                         </div>
                     </div>
