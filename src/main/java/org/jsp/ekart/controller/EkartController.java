@@ -1,6 +1,7 @@
 package org.jsp.ekart.controller;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 
 import org.jsp.ekart.dto.Customer;
@@ -271,11 +272,11 @@ public class EkartController {
 			return "redirect:/vendor/login";
 		}
 	}
-	
+
 	@PostMapping("/update-product")
 	public String updateProduct(Product product, HttpSession session) throws IOException {
-		if (session.getAttribute("vendor") != null) {			
-			Vendor vendor=(Vendor) session.getAttribute("vendor");
+		if (session.getAttribute("vendor") != null) {
+			Vendor vendor = (Vendor) session.getAttribute("vendor");
 			product.setImageLink(cloudinaryHelper.saveToCloudinary(product.getImage()));
 			product.setVendor(vendor);
 			productRepository.save(product);
@@ -286,4 +287,52 @@ public class EkartController {
 			return "redirect:/vendor/login";
 		}
 	}
+
+	@GetMapping("/view-products")
+	public String viewProducts(HttpSession session, ModelMap map) {
+		if (session.getAttribute("customer") != null) {
+			List<Product> products = productRepository.findByApprovedTrue();
+			if (products.isEmpty()) {
+				session.setAttribute("failure", "No Products Present");
+				return "redirect:/customer/home";
+			} else {
+				map.put("products", products);
+				return "customer-view-products.html";
+			}
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/customer/login";
+		}
+	}
+
+	@GetMapping("/search-products")
+	public String searchProducts(HttpSession session) {
+		if (session.getAttribute("customer") != null) {
+			return "search.html";
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/customer/login";
+		}
+	}
+
+	@PostMapping("/search-products")
+	public String search(@RequestParam String query, HttpSession session, ModelMap map) {
+		if (session.getAttribute("customer") != null) {
+			String toSearch = "%" + query + "%";
+			List<Product> list1 = productRepository.findByNameLike(toSearch);
+			List<Product> list2 = productRepository.findByDescriptionLike(toSearch);
+			List<Product> list3 = productRepository.findByCategoryLike(toSearch);
+			HashSet<Product> products = new HashSet<Product>();
+			products.addAll(list1);
+			products.addAll(list2);
+			products.addAll(list3);
+			map.put("products", products);
+			map.put("query", query);
+			return "search.html";
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/customer/login";
+		}
+	}
+
 }

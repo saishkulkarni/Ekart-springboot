@@ -5,37 +5,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ekart - Vendor Home</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23000000' d='M528.12 301.319l47.273-208C578.806 78.301 567.391 64 551.99 64H159.208l-9.166-44.81C147.758 8.021 137.93 0 126.529 0H24C10.745 0 0 10.745 0 24v16c0 13.255 10.745 24 24 24h69.883l70.248 343.435C147.325 417.1 136 435.222 136 456c0 30.928 25.072 56 56 56s56-25.072 56-56c0-15.674-6.447-29.835-16.824-40h209.647C430.447 426.165 424 440.326 424 456c0 30.928 25.072 56 56 56s56-25.072 56-56c0-22.172-12.888-41.332-31.579-50.405l5.517-24.276c3.413-15.018-8.002-29.319-23.403-29.319H218.117l-6.545-32h293.145c11.206 0 20.92-7.754 23.403-18.681z'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #f8f9fa;
-            --accent-color: #ff6b6b;
+            --primary-color: #2563eb;
+            --secondary-color: #f8fafc;
+            --accent-color: #ef4444;
+            --text-color: #1e293b;
+            --light-text: #64748b;
         }
 
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f8;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
         }
 
         .container {
             flex: 1;
             padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .navbar {
-            background: linear-gradient(135deg, var(--primary-color), #2c5282);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, var(--primary-color), #1e40af);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             padding: 1rem 2rem;
         }
 
         .navbar-brand {
             font-size: 1.8rem;
-            font-weight: bold;
+            font-weight: 700;
             color: white !important;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -47,100 +54,91 @@
             transition: all 0.3s ease;
             padding: 0.5rem 1rem;
             margin: 0 0.5rem;
-            border-radius: 4px;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
         }
 
         .nav-link:hover {
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
-        }
-
-        .navbar-toggler {
-            border-color: rgba(255,255,255,0.5);
-        }
-
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
 
         .alert {
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: none;
         }
 
         .content-section {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 30px;
-            margin: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            animation: fadeIn 0.5s ease-out;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+
+        .content-section:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         .btn-custom {
-            margin: 10px;
-            padding: 12px 25px;
-            background-color: var(--primary-color);
+            padding: 1rem 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            background: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            border-radius: 0.5rem;
+            margin: 1rem;
         }
 
         .btn-custom:hover {
-            background-color: #2c5282;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: #1e40af;
+            color: white;
         }
 
         footer {
-            background: var(--secondary-color);
-            color: #333;
-            padding: 1.5rem 0;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+            background: linear-gradient(135deg, #1e40af, var(--primary-color));
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        footer a {
+            transition: all 0.3s ease;
+        }
+
+        footer a:hover {
+            opacity: 0.8;
+            transform: translateY(-2px);
         }
 
         @media (max-width: 768px) {
-            .navbar {
-                padding: 0.5rem 1rem;
-            }
-            
-            .navbar-brand {
-                font-size: 1.5rem;
-            }
-
             .container {
                 padding: 1rem;
             }
 
             .btn-custom {
-                margin: 5px;
-                padding: 10px 20px;
-                width: 100%;
-                max-width: 250px;
+                margin: 0.5rem;
+                padding: 0.75rem 1.5rem;
             }
         }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.8s ease-out forwards;
         }
     </style>
 </head>
@@ -176,7 +174,7 @@
         </div>
         <th:block th:text="${@messageRemover.remove()}"></th:block>
 
-        <div class="content-section text-center">
+        <div class="content-section animate-in">
             <h1>Welcome to Vendor Dashboard</h1>
             <div class="d-flex flex-wrap justify-content-center">
                 <a href="/add-product"><button class="btn-custom"><i class="fas fa-plus mr-2"></i>Add Product</button></a>
@@ -187,7 +185,7 @@
 
     <footer class="text-center text-lg-start mt-auto">
         <div class="text-center p-3">
-            © 2024 Ekart. All rights reserved. | <i class="fas fa-heart text-danger"></i> Made with passion
+            © 2025 Ekart. All rights reserved. | <i class="fas fa-heart text-danger"></i> Made with passion
         </div>
     </footer>
 
@@ -195,7 +193,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        // Auto-dismiss alerts after 2 seconds
         window.setTimeout(function() {
             $(".alert").fadeTo(500, 0).slideUp(500, function(){
                 $(this).remove(); 
