@@ -3,11 +3,15 @@ package org.jsp.ekart.controller;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.jsp.ekart.dto.Cart;
 import org.jsp.ekart.dto.Customer;
+import org.jsp.ekart.dto.Item;
 import org.jsp.ekart.dto.Product;
 import org.jsp.ekart.dto.Vendor;
 import org.jsp.ekart.helper.CloudinaryHelper;
+import org.jsp.ekart.repository.CustomerRepository;
 import org.jsp.ekart.repository.ProductRepository;
 import org.jsp.ekart.service.CustomerService;
 import org.jsp.ekart.service.VendorService;
@@ -24,14 +28,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
+/**
+ * Main controller class for handling E-commerce operations
+ */
 @Controller
 public class EkartController {
 
+	// Admin credentials from properties file
 	@Value("${admin.email}")
 	String adminEmail;
 	@Value("${admin.password}")
 	String adminPassword;
 
+	// Service layer dependencies
 	@Autowired
 	VendorService vendorService;
 
@@ -44,42 +53,69 @@ public class EkartController {
 	@Autowired
 	ProductRepository productRepository;
 
+	@Autowired
+	CustomerRepository customerRepository;
+
+	/**
+	 * Loads the main home page
+	 */
 	@GetMapping("/")
 	public String loadHomePage() {
 		return "home.html";
 	}
 
+	/**
+	 * Loads OTP verification page for vendor
+	 */
 	@GetMapping("/vendor/otp/{id}")
 	public String loadOtpPage(@PathVariable int id, ModelMap map) {
 		map.put("id", id);
 		return "vendor-otp.html";
 	}
 
+	/**
+	 * Loads vendor registration page
+	 */
 	@GetMapping("/vendor/register")
 	public String loadVendorRegistration(ModelMap map, Vendor vendor) {
 		return vendorService.loadRegistration(map, vendor);
 	}
 
+	/**
+	 * Handles vendor registration form submission
+	 */
 	@PostMapping("/vendor/register")
 	public String vendorRegistration(@Valid Vendor vendor, BindingResult result, HttpSession session) {
 		return vendorService.registration(vendor, result, session);
 	}
 
+	/**
+	 * Verifies vendor OTP
+	 */
 	@PostMapping("/vendor/otp")
 	public String verifyOtp(@RequestParam int id, @RequestParam int otp, HttpSession session) {
 		return vendorService.verifyOtp(id, otp, session);
 	}
 
+	/**
+	 * Loads vendor login page
+	 */
 	@GetMapping("/vendor/login")
 	public String loadLogin() {
 		return "vendor-login.html";
 	}
 
+	/**
+	 * Handles vendor login
+	 */
 	@PostMapping("/vendor/login")
 	public String login(@RequestParam String email, @RequestParam String password, HttpSession session) {
 		return vendorService.login(email, password, session);
 	}
 
+	/**
+	 * Loads vendor home page after successful login
+	 */
 	@GetMapping("/vendor/home")
 	public String loadHome(HttpSession session) {
 		if (session.getAttribute("vendor") != null)
@@ -90,6 +126,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Handles logout functionality
+	 */
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
 		session.removeAttribute("vendor");
@@ -97,6 +136,9 @@ public class EkartController {
 		return "redirect:/";
 	}
 
+	/**
+	 * Loads add product page for vendor
+	 */
 	@GetMapping("/add-product")
 	public String loadAddProduct(HttpSession session) {
 		if (session.getAttribute("vendor") != null)
@@ -107,6 +149,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Handles adding new product by vendor
+	 */
 	@PostMapping("/add-product")
 	public String addProduct(Product product, HttpSession session) throws IOException {
 		if (session.getAttribute("vendor") != null) {
@@ -122,6 +167,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Shows list of products for vendor management
+	 */
 	@GetMapping("/manage-products")
 	public String manageProducts(HttpSession session, ModelMap map) {
 		if (session.getAttribute("vendor") != null) {
@@ -140,6 +188,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Handles product deletion
+	 */
 	@GetMapping("/delete/{id}")
 	public String delete(@PathVariable int id, HttpSession session) {
 		if (session.getAttribute("vendor") != null) {
@@ -152,14 +203,19 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Loads admin login page
+	 */
 	@GetMapping("/admin/login")
 	public String loadAdminLogin() {
 		return "admin-login.html";
 	}
 
+	/**
+	 * Handles admin login authentication
+	 */
 	@PostMapping("/admin/login")
 	public String adminLogin(@RequestParam String email, @RequestParam String password, HttpSession session) {
-
 		if (email.equals(adminEmail)) {
 			if (password.equals(adminPassword)) {
 				session.setAttribute("admin", adminEmail);
@@ -175,6 +231,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Loads admin home page
+	 */
 	@GetMapping("/admin/home")
 	public String loadAdminHome(HttpSession session) {
 		if (session.getAttribute("admin") != null)
@@ -185,6 +244,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Shows products pending approval to admin
+	 */
 	@GetMapping("/approve-products")
 	public String approveProducts(HttpSession session, ModelMap map) {
 		if (session.getAttribute("admin") != null) {
@@ -202,6 +264,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Handles changing product approval status
+	 */
 	@GetMapping("/change/{id}")
 	public String changeStatus(@PathVariable int id, HttpSession session) {
 		if (session.getAttribute("admin") != null) {
@@ -220,37 +285,58 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Loads customer OTP verification page
+	 */
 	@GetMapping("/customer/otp/{id}")
 	public String loadCustomerOtpPage(@PathVariable int id, ModelMap map) {
 		map.put("id", id);
 		return "customer-otp.html";
 	}
 
+	/**
+	 * Loads customer registration page
+	 */
 	@GetMapping("/customer/register")
 	public String loadCustomerRegistration(ModelMap map, Customer customer) {
 		return customerService.loadRegistration(map, customer);
 	}
 
+	/**
+	 * Handles customer registration
+	 */
 	@PostMapping("/customer/register")
 	public String customerRegistration(@Valid Customer customer, BindingResult result, HttpSession session) {
 		return customerService.registration(customer, result, session);
 	}
 
+	/**
+	 * Verifies customer OTP
+	 */
 	@PostMapping("/customer/otp")
 	public String verifyCustomerOtp(@RequestParam int id, @RequestParam int otp, HttpSession session) {
 		return customerService.verifyOtp(id, otp, session);
 	}
 
+	/**
+	 * Loads customer login page
+	 */
 	@GetMapping("/customer/login")
 	public String loadCustomerLogin() {
 		return "customer-login.html";
 	}
 
+	/**
+	 * Handles customer login
+	 */
 	@PostMapping("/customer/login")
 	public String customerLogin(@RequestParam String email, @RequestParam String password, HttpSession session) {
 		return customerService.login(email, password, session);
 	}
 
+	/**
+	 * Loads customer home page
+	 */
 	@GetMapping("/customer/home")
 	public String loadCustomerHome(HttpSession session) {
 		if (session.getAttribute("customer") != null)
@@ -261,6 +347,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Loads product editing page for vendor
+	 */
 	@GetMapping("/edit/{id}")
 	public String editProduct(@PathVariable int id, ModelMap map, HttpSession session) {
 		if (session.getAttribute("vendor") != null) {
@@ -273,6 +362,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Handles product update by vendor
+	 */
 	@PostMapping("/update-product")
 	public String updateProduct(Product product, HttpSession session) throws IOException {
 		if (session.getAttribute("vendor") != null) {
@@ -288,6 +380,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Shows approved products to customers
+	 */
 	@GetMapping("/view-products")
 	public String viewProducts(HttpSession session, ModelMap map) {
 		if (session.getAttribute("customer") != null) {
@@ -305,6 +400,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Loads product search page
+	 */
 	@GetMapping("/search-products")
 	public String searchProducts(HttpSession session) {
 		if (session.getAttribute("customer") != null) {
@@ -315,6 +413,9 @@ public class EkartController {
 		}
 	}
 
+	/**
+	 * Handles product search functionality
+	 */
 	@PostMapping("/search-products")
 	public String search(@RequestParam String query, HttpSession session, ModelMap map) {
 		if (session.getAttribute("customer") != null) {
@@ -329,6 +430,70 @@ public class EkartController {
 			map.put("products", products);
 			map.put("query", query);
 			return "search.html";
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/customer/login";
+		}
+	}
+
+	@GetMapping("/view-cart")
+	public String viewCart(HttpSession session, ModelMap map) {
+		if (session.getAttribute("customer") != null) {
+			Customer customer = (Customer) session.getAttribute("customer");
+			Cart cart = customer.getCart();
+			if (cart == null) {
+				session.setAttribute("failure", "Nothing is Present inside Cart");
+				return "redirect:/customer/home";
+			} else {
+				List<Item> items = cart.getItems();
+				if (items.isEmpty()) {
+					session.setAttribute("failure", "Nothing is Present inside Cart");
+					return "redirect:/customer/home";
+				} else {
+					map.put("items", items);
+					return "view-cart.html";
+				}
+			}
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/customer/login";
+		}
+	}
+
+	@GetMapping("/add-cart/{id}")
+	public String addToCart(@PathVariable int id, HttpSession session) {
+		if (session.getAttribute("customer") != null) {
+			Product product = productRepository.findById(id).get();
+			if (product.getStock() > 0) {
+				Customer customer = (Customer) session.getAttribute("customer");
+
+				Cart cart = customer.getCart();
+				List<Item> items = cart.getItems();
+
+				if (items.stream().map(x -> x.getName()).collect(Collectors.toList()).contains(product.getName())) {
+					session.setAttribute("failure", "Product Already Exists in Cart");
+					return "redirect:/customer/home";
+				} else {
+					Item item = new Item();
+					item.setName(product.getName());
+					item.setCategory(product.getCategory());
+					item.setDescription(product.getDescription());
+					item.setImageLink(product.getImageLink());
+					item.setPrice(product.getPrice());
+					item.setQuantity(1);
+					items.add(item);
+					
+					customerRepository.save(customer);
+					session.setAttribute("success", "Product Added to Cart Success");
+					session.setAttribute("customer", customerRepository.findById(customer.getId()).get());
+					return "redirect:/customer/home";
+				}
+
+			} else {
+				session.setAttribute("failure", "Sorry! Product Out of Stock");
+				return "redirect:/customer/home";
+			}
+
 		} else {
 			session.setAttribute("failure", "Invalid Session, First Login");
 			return "redirect:/customer/login";
