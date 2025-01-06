@@ -222,13 +222,18 @@
                             <span th:text="${p.category}"></span>
                         </div>
                         <div>
-                            <span>-</span>
-                            <span th:text="${p.quantity}"></span>
-                            <span>+</span>
+                            <a th:href="'/decrease/'+${p.id}"><button>-</button></a> 
+                            <h3 th:text="${p.quantity}"></h3>
+                           <a th:href="'/increase/'+${p.id}"><button>+</button></a> 
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div>
+            <h3>Total : <span th:text="${totalPrice}"></span>  ₹</h3>
+            <button>Pay</button>
         </div>
 
         <div class="text-center mt-4">
