@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.json.JSONObject;
 import org.jsp.ekart.dto.Cart;
 import org.jsp.ekart.dto.Customer;
 import org.jsp.ekart.dto.Item;
@@ -13,6 +14,7 @@ import org.jsp.ekart.dto.Vendor;
 import org.jsp.ekart.helper.CloudinaryHelper;
 import org.jsp.ekart.repository.CustomerRepository;
 import org.jsp.ekart.repository.ItemRepository;
+import org.jsp.ekart.repository.OrderRepository;
 import org.jsp.ekart.repository.ProductRepository;
 import org.jsp.ekart.service.CustomerService;
 import org.jsp.ekart.service.VendorService;
@@ -25,6 +27,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -43,6 +49,9 @@ public class EkartController {
 
 	@Autowired
 	ItemRepository itemRepository;
+
+	@Autowired
+	OrderRepository orderRepository;
 
 	// Service layer dependencies
 	@Autowired
@@ -454,7 +463,7 @@ public class EkartController {
 					session.setAttribute("failure", "Nothing is Present inside Cart");
 					return "redirect:/customer/home";
 				} else {
-					map.put("totalPrice", items.stream().mapToDouble(i->i.getPrice()).sum());
+					map.put("totalPrice", items.stream().mapToDouble(i -> i.getPrice()).sum());
 					map.put("items", items);
 					return "view-cart.html";
 				}
@@ -530,25 +539,24 @@ public class EkartController {
 			return "redirect:/customer/login";
 		}
 	}
-	
+
 	@GetMapping("/decrease/{id}")
 	public String decrease(@PathVariable int id, HttpSession session) {
 		if (session.getAttribute("customer") != null) {
 			Customer customer = (Customer) session.getAttribute("customer");
 			Item item = itemRepository.findById(id).get();
 			Product product = productRepository.findByNameLike(item.getName()).get(0);
-			
-			if(item.getQuantity()>1) {
-				item.setQuantity(item.getQuantity()-1);
-				item.setPrice(item.getPrice()-product.getPrice());
+
+			if (item.getQuantity() > 1) {
+				item.setQuantity(item.getQuantity() - 1);
+				item.setPrice(item.getPrice() - product.getPrice());
 				itemRepository.save(item);
 				product.setStock(product.getStock() + 1);
 				productRepository.save(product);
 				session.setAttribute("success", "Product Removed from Cart Success");
 				session.setAttribute("customer", customerRepository.findById(customer.getId()).get());
 				return "redirect:/view-cart";
-			}
-			else {
+			} else {
 				customer.getCart().getItems().remove(item);
 				customerRepository.save(customer);
 				session.setAttribute("success", "Product Quantity Reduced from Cart Success");
@@ -562,4 +570,68 @@ public class EkartController {
 		}
 	}
 
+	@GetMapping("/payment")
+	public String payment(HttpSession session, ModelMap map) {
+		Customer customer = (Customer) session.getAttribute("customer");
+		if (session.getAttribute("customer") != null) {
+
+			try {
+
+				double amount = customer.getCart().getItems().stream().mapToDouble(i -> i.getPrice()).sum();
+
+				RazorpayClient client = new RazorpayClient("rzp_test_zH7QtiK5JnMMiw", "HWQWwpKQbK5XdLZEUTqnGQVC");
+
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("currency", "INR");
+				jsonObject.put("amount", amount * 100);
+
+				Order order = client.orders.create(jsonObject);
+				map.put("key", "rzp_test_zH7QtiK5JnMMiw");
+				map.put("id", order.get("id"));
+				map.put("amount", amount * 100);
+				map.put("customer", customer);
+
+				return "payment.html";
+
+			} catch (RazorpayException e) {
+				session.setAttribute("failure", "Invalid Session, First Login");
+				return "redirect:/customer/login";
+			}
+
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/customer/login";
+		}
+	}
+
+	@PostMapping("/success")
+	public String paymentSuccess(org.jsp.ekart.dto.Order order, HttpSession session) {
+		if (session.getAttribute("customer") != null) {
+			Customer customer = (Customer) session.getAttribute("customer");
+
+			order.setCustomer(customer);
+			order.setTotalPrice(customer.getCart().getItems().stream().mapToDouble(i -> i.getPrice()).sum());
+
+			List<Item> items = customer.getCart().getItems();
+			System.out.println(items.size());
+			
+			List<Item> orderItems=order.getItems();
+			for(Item item:items) {
+				orderItems.add(item);
+			}
+			order.setItems(orderItems);
+			orderRepository.save(order);
+			
+			
+			customer.getCart().getItems().clear();
+			customerRepository.save(customer);
+			
+			session.setAttribute("customer", customerRepository.findById(customer.getId()).get());
+			session.setAttribute("success", "Order Placed Success");
+			return "redirect:/customer/home";
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/customer/login";
+		}
+	}
 }
