@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div th:each="order:${orders}">
+        Order id: <span th:text="${order.razorpay_order_id}"></span><br><Br>
+        Payment id: <span th:text="${order.razorpay_payment_id}"></span><br><Br>
+        Ordered date: <span th:text="${order.orderDate}"></span><br><Br>
+        Total Price: <span th:text="${order.totalPrice}"></span><br><Br>
+        Items:
+        <div th:each="item:${order.items}">
+            Name: <span th:text="${item.name}"></span><br><br>
+            Price: <span th:text="${item.price}"></span><br><br>
+            quantity: <span th:text="${item.quantity}"></span><br><br>
+            Image: <img height="150px" width="150px" th:src="${item.imageLink}"></img><br><br>
+            category: <span th:text="${item.category}"></span><br><br>
+        </div>
+    </div>
+
+</body>
+</html>

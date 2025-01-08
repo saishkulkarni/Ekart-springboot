@@ -614,18 +614,25 @@ public class EkartController {
 
 			List<Item> items = customer.getCart().getItems();
 			System.out.println(items.size());
-			
-			List<Item> orderItems=order.getItems();
-			for(Item item:items) {
-				orderItems.add(item);
+
+			List<Item> orderItems = order.getItems();
+			for (Item item : items) {
+				Item item2 = new Item();
+				item2.setCategory(item.getCategory());
+				item2.setDescription(item.getDescription());
+				item2.setImageLink(item.getImageLink());
+				item2.setName(item.getName());
+				item2.setPrice(item.getPrice());
+				item2.setQuantity(item.getQuantity());
+				orderItems.add(item2);
 			}
+
 			order.setItems(orderItems);
 			orderRepository.save(order);
-			
-			
+
 			customer.getCart().getItems().clear();
 			customerRepository.save(customer);
-			
+
 			session.setAttribute("customer", customerRepository.findById(customer.getId()).get());
 			session.setAttribute("success", "Order Placed Success");
 			return "redirect:/customer/home";
@@ -633,5 +640,24 @@ public class EkartController {
 			session.setAttribute("failure", "Invalid Session, First Login");
 			return "redirect:/customer/login";
 		}
+	}
+
+	@GetMapping("/view-orders")
+	public String viewOrders(HttpSession session, ModelMap map) {
+		if (session.getAttribute("customer") != null) {
+			Customer customer = (Customer) session.getAttribute("customer");
+			List<org.jsp.ekart.dto.Order> orders = orderRepository.findByCustomer(customer);
+			if (orders.isEmpty()) {
+				session.setAttribute("success", "No Orders Placed Yet");
+				return "redirect:/customer/home";
+			} else {
+				map.put("orders", orders);
+				return "view-orders.html";
+			}
+		} else {
+			session.setAttribute("failure", "Invalid Session, First Login");
+			return "redirect:/customer/login";
+		}
+
 	}
 }
